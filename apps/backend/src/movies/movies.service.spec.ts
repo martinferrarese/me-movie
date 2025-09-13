@@ -66,4 +66,46 @@ describe('MoviesService', () => {
       HttpException,
     );
   });
+
+  it('debe incluir filtros type y page en la URL', async () => {
+    httpServiceMock.get.mockReturnValue(
+      of({
+        data: {
+          Response: 'True',
+          Search: [],
+        },
+      }),
+    );
+
+    await service.search('matrix', { type: 'movie', page: 2 });
+
+    expect(httpService.get).toHaveBeenCalledWith(
+      expect.stringContaining('type=movie'),
+    );
+    expect(httpService.get).toHaveBeenCalledWith(
+      expect.stringContaining('page=2'),
+    );
+  });
+
+  it('debe llamar getById', async () => {
+    const fake = { Title: 'Matrix', imdbID: 'tt0133093' };
+    httpServiceMock.get.mockReturnValue(of({ data: fake }));
+
+    const result = await service.getById('tt0133093');
+    expect(result).toBe(fake);
+    expect(httpService.get).toHaveBeenCalledWith(
+      expect.stringContaining('i=tt0133093'),
+    );
+  });
+
+  it('debe llamar getByTitleExact', async () => {
+    const fake = { Title: 'The Matrix', Year: '1999' };
+    httpServiceMock.get.mockReturnValue(of({ data: fake }));
+
+    const result = await service.getByTitleExact('The Matrix');
+    expect(result).toBe(fake);
+    expect(httpService.get).toHaveBeenCalledWith(
+      expect.stringContaining('t=The%20Matrix'),
+    );
+  });
 });

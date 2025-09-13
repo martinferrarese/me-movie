@@ -10,17 +10,39 @@ export class MoviesService {
     private readonly config: ConfigService,
   ) {}
 
-  async search(query: string) {
+  async search(
+    query: string,
+    options?: { type?: 'movie' | 'series' | 'episode'; page?: number },
+  ) {
     const apiKey = this.config.get<string>('OMDB_API_KEY');
     if (!apiKey) {
       throw new Error('OMDB_API_KEY not set');
     }
-    const url = `https://www.omdbapi.com/?apikey=${apiKey}&s=${encodeURIComponent(query)}`;
+    const params = new URLSearchParams({ apikey: apiKey, s: query });
+    if (options?.type) params.append('type', options.type);
+    if (options?.page) params.append('page', options.page.toString());
+    const url = `https://www.omdbapi.com/?${params.toString()}`;
     const response = await firstValueFrom(this.http.get(url));
     const data = response.data;
     if (data.Response === 'False') {
       throw new HttpException(data.Error, 404);
     }
     return data.Search;
+  }
+
+  async getById(imdbID: string) {
+    const apiKey = this.config.get<string>('OMDB_API_KEY');
+    const url = `https://www.omdbapi.com/?apikey=${apiKey}&i=${imdbID}`;
+    const response = await firstValueFrom(this.http.get(url));
+    return response.data;
+  }
+
+  async getByTitleExact(title: string) {
+    const apiKey = this.config.get<string>('OMDB_API_KEY');
+    const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(
+      title,
+    )}`;
+    const response = await firstValueFrom(this.http.get(url));
+    return response.data;
   }
 }
