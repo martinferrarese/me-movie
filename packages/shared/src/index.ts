@@ -1,6 +1,1 @@
-export interface Movie {
-  Title: string;
-  Year: string;
-  imdbID: string;
-  Type: string;
-}
+export * from './movie';
