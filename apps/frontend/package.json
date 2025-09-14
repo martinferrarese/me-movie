@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@me-movie/shared": "workspace:*",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/config": "^4.0.2",
     "dotenv": "^17.2.2",

@@ -1,21 +1,29 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Home from './page';
 
-function mockFetchOnce(data: unknown, ok = true) {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok,
-    json: async () => data,
-    text: async () => JSON.stringify(data),
-  }) as unknown as jest.Mock;
+import Home from './page';
+import { Movie } from '@me-movie/shared';
+
+jest.mock('../lib/moviesApi', () => ({
+  __esModule: true,
+  searchMovies: jest.fn(),
+}));
+
+import { searchMovies } from '../lib/moviesApi';
+
+function mockApi(data: unknown, reject = false) {
+  (searchMovies as jest.Mock).mockImplementationOnce(async () => {
+    if (reject) throw new TypeError('Network error');
+    return data as Movie[];
+  });
 }
 
 describe('Home page', () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.resetAllMocks();
   });
 
   it('muestra resultados cuando la búsqueda devuelve datos', async () => {
-    mockFetchOnce([{ Title: 'Matrix', Year: '1999', imdbID: '1', Type: 'movie' }]);
+    mockApi([{ Title: 'Matrix', Year: '1999', imdbID: '1', Type: 'movie' }]);
     render(<Home />);
     fireEvent.change(screen.getByLabelText('query'), { target: { value: 'matrix' } });
     fireEvent.click(screen.getByText('Buscar'));
@@ -28,7 +36,7 @@ describe('Home page', () => {
   });
 
   it('muestra mensaje de sin resultados', async () => {
-    mockFetchOnce([]);
+    mockApi([]);
     render(<Home />);
     fireEvent.change(screen.getByLabelText('query'), { target: { value: 'xyz' } });
     fireEvent.click(screen.getByText('Buscar'));
@@ -36,7 +44,7 @@ describe('Home page', () => {
   });
 
   it('muestra error cuando la petición falla', async () => {
-    global.fetch = jest.fn().mockRejectedValue(new TypeError('Network error')) as unknown as jest.Mock;
+    mockApi([], true);
     render(<Home />);
     fireEvent.change(screen.getByLabelText('query'), { target: { value: 'matrix' } });
     fireEvent.click(screen.getByText('Buscar'));

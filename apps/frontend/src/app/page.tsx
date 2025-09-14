@@ -1,14 +1,7 @@
 'use client';
 import { useState } from 'react';
-
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-
-type Movie = {
-  Title: string;
-  Year: string;
-  imdbID: string;
-  Type: string;
-};
+import { searchMovies } from '../lib/moviesApi';
+import { Movie } from '@me-movie/shared';
 
 export default function Home() {
   const [query, setQuery] = useState('');
@@ -23,20 +16,7 @@ export default function Home() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API}/movies?query=${encodeURIComponent(query)}`);
-
-      // Si la API responde 404 (sin resultados en OMDB), tratamos como búsqueda sin coincidencias
-      if (res.status === 404) {
-        setResults([]);
-        setSearched(true);
-        return;
-      }
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`Error del servidor: ${res.status} ${text}`);
-      }
-      const data: Movie[] = await res.json();
+      const data = await searchMovies(query);
       setResults(data);
       setSearched(true);
     } catch (err: unknown) {

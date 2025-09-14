@@ -2,6 +2,7 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
+import { Movie } from '@me-movie/shared';
 
 @Injectable()
 export class MoviesService {
@@ -13,7 +14,7 @@ export class MoviesService {
   async search(
     query: string,
     options?: { type?: 'movie' | 'series' | 'episode'; page?: number },
-  ) {
+  ): Promise<Movie[]> {
     const trimmedQuery = query.trim();
     if (!trimmedQuery) {
       throw new Error('La consulta de búsqueda está vacía');
@@ -32,7 +33,7 @@ export class MoviesService {
     if (data.Response === 'False') {
       throw new HttpException(data.Error, 404);
     }
-    return data.Search;
+    return data.Search as Movie[];
   }
 
   async getById(imdbID: string) {
