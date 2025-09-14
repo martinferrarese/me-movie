@@ -17,7 +17,7 @@ jobs:
           node-version: 20
           cache: "npm"
       - name: Install dependencies (root + workspaces)
-        run: npm ci
+        run: npm ci --workspaces --include-workspace-root
       - name: Run tests (todas las apps)
         run: npm test --workspaces --if-present
 
