@@ -14,11 +14,16 @@ export class MoviesService {
     query: string,
     options?: { type?: 'movie' | 'series' | 'episode'; page?: number },
   ) {
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) {
+      throw new Error('La consulta de búsqueda está vacía');
+    }
+
     const apiKey = this.config.get<string>('OMDB_API_KEY');
     if (!apiKey) {
       throw new Error('OMDB_API_KEY not set');
     }
-    const params = new URLSearchParams({ apikey: apiKey, s: query });
+    const params = new URLSearchParams({ apikey: apiKey, s: trimmedQuery });
     if (options?.type) params.append('type', options.type);
     if (options?.page) params.append('page', options.page.toString());
     const url = `https://www.omdbapi.com/?${params.toString()}`;
@@ -38,9 +43,10 @@ export class MoviesService {
   }
 
   async getByTitleExact(title: string) {
+    const trimmedTitle = title.trim();
     const apiKey = this.config.get<string>('OMDB_API_KEY');
     const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(
-      title,
+      trimmedTitle,
     )}`;
     const response = await firstValueFrom(this.http.get(url));
     return response.data;

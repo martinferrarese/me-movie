@@ -108,4 +108,33 @@ describe('MoviesService', () => {
       expect.stringContaining('t=The%20Matrix'),
     );
   });
+
+  it('debe ignorar espacios iniciales/finales en la búsqueda', async () => {
+    httpServiceMock.get.mockReturnValue(
+      of({
+        data: {
+          Response: 'True',
+          Search: [{ Title: 'Matrix' }],
+        },
+      }),
+    );
+
+    const result = await service.search('  matrix   ');
+
+    expect(result).toEqual([{ Title: 'Matrix' }]);
+    expect(httpService.get).toHaveBeenCalledWith(
+      expect.stringContaining('s=matrix'),
+    );
+  });
+
+  it('debe ignorar espacios iniciales/finales en getByTitleExact', async () => {
+    const fake = { Title: 'The Matrix', Year: '1999' };
+    httpServiceMock.get.mockReturnValue(of({ data: fake }));
+
+    const result = await service.getByTitleExact('   The Matrix   ');
+    expect(result).toBe(fake);
+    expect(httpService.get).toHaveBeenCalledWith(
+      expect.stringContaining('t=The%20Matrix'),
+    );
+  });
 });
