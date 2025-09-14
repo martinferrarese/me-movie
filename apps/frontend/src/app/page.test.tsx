@@ -32,7 +32,7 @@ describe('Home page', () => {
     render(<Home />);
     fireEvent.change(screen.getByLabelText('query'), { target: { value: 'xyz' } });
     fireEvent.click(screen.getByText('Buscar'));
-    await waitFor(() => screen.getByText('No se encontraron resultados'));
+    await waitFor(() => screen.getByText('No encontramos películas que coincidan con tu búsqueda.'));
   });
 
   it('muestra error cuando la petición falla', async () => {
@@ -41,5 +41,10 @@ describe('Home page', () => {
     fireEvent.change(screen.getByLabelText('query'), { target: { value: 'matrix' } });
     fireEvent.click(screen.getByText('Buscar'));
     await waitFor(() => screen.getByText('No se pudo conectar con el servidor backend.'));
+  });
+
+  it('muestra descripción inicial', () => {
+    render(<Home />);
+    expect(screen.getByText('Buscá tu peli o serie favorita')).toBeInTheDocument();
   });
 });

@@ -44,7 +44,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen py-10 flex flex-col items-center gap-6">
-      <h1 className="text-3xl font-bold">Buscador de Películas</h1>
+      <h1 className="text-3xl font-bold">Me Movie</h1>
+      <p className="text-gray-700">Buscá tu peli o serie favorita</p>
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input
           aria-label="query"
@@ -57,10 +58,10 @@ export default function Home() {
           Buscar
         </button>
       </form>
-      {error && <p className="text-red-600">{error}</p>}
+      {error && <p role="alert" className="text-red-600">{error}</p>}
       {loading && <p>Cargando...</p>}
       {searched && !loading && results.length === 0 && !error && (
-        <p>No se encontraron resultados</p>
+        <p>No encontramos películas que coincidan con tu búsqueda.</p>
       )}
       <ul className="grid gap-4 mt-6">
         {results.map((movie) => (
