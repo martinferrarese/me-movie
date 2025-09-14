@@ -24,6 +24,14 @@ export default function Home() {
     setError(null);
     try {
       const res = await fetch(`${API}/movies?query=${encodeURIComponent(query)}`);
+
+      // Si la API responde 404 (sin resultados en OMDB), tratamos como búsqueda sin coincidencias
+      if (res.status === 404) {
+        setResults([]);
+        setSearched(true);
+        return;
+      }
+
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Error del servidor: ${res.status} ${text}`);
