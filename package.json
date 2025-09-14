@@ -12,11 +12,14 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "private": "true",
+  "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
+  "dependencies": {
+    "@me-movie/shared": "workspace:*"
+  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "eslint": "^9.35.0",
