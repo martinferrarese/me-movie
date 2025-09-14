@@ -17,9 +17,7 @@
     "apps/*",
     "packages/*"
   ],
-  "dependencies": {
-    "@me-movie/shared": "workspace:*"
-  },
+  "dependencies": { },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "eslint": "^9.35.0",
