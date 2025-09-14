@@ -5,7 +5,7 @@ const createJestConfig = nextJest({ dir: "./" });
 
 module.exports = createJestConfig({
   testEnvironment: "jest-environment-jsdom",
-  setupFilesAfterEnv: [path.join(__dirname, 'test-setup.js')],
+  setupFilesAfterEnv: [path.join(__dirname, "test-setup.js")],
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",
   },
