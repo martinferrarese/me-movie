@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "./scripts/start_env.sh",
-    "restart": "./scripts/restart_env.sh"
+    "restart": "./scripts/restart_env.sh",
+    "build": "npm run --workspace=packages/shared build && npm run --workspace=apps/backend build && npm run --workspace=apps/frontend build"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,7 @@
     "apps/*",
     "packages/*"
   ],
-  "dependencies": { },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "eslint": "^9.35.0",
