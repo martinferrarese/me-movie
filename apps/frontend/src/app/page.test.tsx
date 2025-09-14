@@ -1,12 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Home from './page';
 
-function mockFetchOnce(data: any, ok = true) {
+function mockFetchOnce(data: unknown, ok = true) {
   global.fetch = jest.fn().mockResolvedValue({
     ok,
     json: async () => data,
     text: async () => JSON.stringify(data),
-  }) as any;
+  }) as unknown as jest.Mock;
 }
 
 describe('Home page', () => {
@@ -36,7 +36,7 @@ describe('Home page', () => {
   });
 
   it('muestra error cuando la petición falla', async () => {
-    global.fetch = jest.fn().mockRejectedValue(new TypeError('Network error')) as any;
+    global.fetch = jest.fn().mockRejectedValue(new TypeError('Network error')) as unknown as jest.Mock;
     render(<Home />);
     fireEvent.change(screen.getByLabelText('query'), { target: { value: 'matrix' } });
     fireEvent.click(screen.getByText('Buscar'));
